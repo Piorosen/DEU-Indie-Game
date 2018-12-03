@@ -23,6 +23,11 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+
+#
+# 유니티 하면서 생기는 찌꺼기 삭제합니다 ^^
+# 전꺼 안지우고 커밋해서 지움
+#
 Temp/
 Obj/
 UnityGenerated/
