@@ -13,10 +13,11 @@ public class BasicEnemy : Character {
 	
 	new void Update () {
         base.Update();
-        randomMovement();
+        RandomMovement();
     }
 
-    protected void randomMovement() {
+
+    protected void RandomMovement() {
         var anim = GetComponent<Animator>();
 
         if(distance <= 0) {
@@ -24,24 +25,33 @@ public class BasicEnemy : Character {
             distance = Mathf.RoundToInt(Random.Range(0, 100));
         }
 
+        Vector2 nextMove = new Vector2();
+
         switch(direction) {
-        case 1:
-            dx = -1;
+            case 1:
+            {
+                nextMove.x = -1;
+            }
             break;
         case 2:
-            dx = +1;
+            {
+                nextMove.x = +1;
+            }
             break;
         case 3:
-            dy = +1;
-            break;
+           {
+               nextMove.x = +1;
+           }
+           break;
         case 4:
-            dy = -1;
+            {
+                nextMove.x = +1;
+            }
             break;
         }
-        anim.SetFloat("dy", dy);
-        anim.SetFloat("dx", dx);
-        anim.SetBool("walking", dx != 0 && dy != 0);
-        move(new Vector2(dx, dy));
+        anim.SetFloat("dy", nextMove.y);
+        anim.SetBool("walking", nextMove.x != 0 && nextMove.y != 0);
+        Move(nextMove);
         distance--;
     }
 
@@ -49,11 +59,11 @@ public class BasicEnemy : Character {
         var other = collision.collider.gameObject;
         if(other.name == "Mandle") {
             var mandle = other.GetComponent<Mandle>();
-            mandle.damage(1);
+            mandle.Damage(1);
             var dir = other.transform.position - this.transform.position;
             dir = other.transform.InverseTransformDirection(dir);
             var angle = Mathf.Atan2(dir.y, dir.x);
-            mandle.knockback(angle, 500);
+            mandle.Knockback(angle, 500);
         }
     }
 

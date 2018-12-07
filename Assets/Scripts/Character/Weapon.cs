@@ -2,26 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour {
-
+public class Weapon : MonoBehaviour
+{
     public int power;
     public bool enemy;
     public int knockbackDistance = 500;
     public int swingSpeed = 500;
     public int swingAngle = 100;
 
-    public int dx, dy;
+    private int dx, dy;
     private float offX, offY;
 
     private bool swinging;
     private float swingStep;
     private const int maxSwingStep = 100;
-
-	void Start () {
-		
-	}
 	
-	void Update () {
+	void Update ()
+    {
         var hide = dx == 0 && dy == 0 || !swinging;
         GetComponent<Collider2D>().enabled = !hide;
         GetComponent<SpriteRenderer>().enabled = !hide;
@@ -41,8 +38,13 @@ public class Weapon : MonoBehaviour {
         }
 	}
 
-    public void swing() {
-        if(!swinging) {
+    public void Swing(int dx, int dy)
+    {
+        if(!swinging)
+        {
+            this.dx = dx;
+            this.dy = dy;
+
             swinging = true;
             swingStep = 0;
             offX = dx * 0.4f;
@@ -50,15 +52,17 @@ public class Weapon : MonoBehaviour {
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision) {
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
         var other = collision.collider.gameObject;
-        if(!enemy && other.tag == "Enemy" || enemy && other.tag == "Player") {
+        if(!enemy && other.tag == "Enemy" || enemy && other.tag == "Player")
+        {
             var character = other.GetComponent<Character>();
-            character.damage(power);
+            character.Damage(power);
             var dir = other.transform.position - this.transform.position;
             dir = other.transform.InverseTransformDirection(dir);
             var angle = Mathf.Atan2(dir.y, dir.x);
-            character.knockback(angle, 500);
+            character.Knockback(angle, 500);
         }
     }
 

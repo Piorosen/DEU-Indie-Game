@@ -123,6 +123,7 @@ MonoBehaviour:
   speed: 20
   maxHealth: 6
   health: 6
+  weapon: {fileID: 0}
 --- !u!212 &212081961216930390
 SpriteRenderer:
   m_ObjectHideFlags: 1
