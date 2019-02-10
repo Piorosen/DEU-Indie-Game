@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Defense : MonoBehaviour
+public class Defense : Skill
 {
     // Start is called before the first frame update
     void Start()

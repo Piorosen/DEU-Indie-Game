@@ -61,6 +61,7 @@
     <Compile Include="Assets\Scripts\Character\Skill\Attack.cs" />
     <Compile Include="Assets\Scripts\Character\Skill\Defense.cs" />
     <Compile Include="Assets\Scripts\Character\Skill\Hook.cs" />
+    <Compile Include="Assets\Scripts\Character\Skill\Skill.cs" />
     <Compile Include="Assets\Scripts\Character\Skill\SwordThrow.cs" />
     <Compile Include="Assets\Scripts\InputManager.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
