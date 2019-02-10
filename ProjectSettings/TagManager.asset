@@ -41,3 +41,21 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 987784269
+    locked: 0
+  - name: WalkableBlock
+    uniqueID: 908200013
+    locked: 0
+  - name: Build
+    uniqueID: 1454905195
+    locked: 0
+  - name: Player
+    uniqueID: 52626193
+    locked: 0
+  - name: Skill
+    uniqueID: 3551879065
+    locked: 0
+  - name: Monster
+    uniqueID: 3574714821
+    locked: 0
