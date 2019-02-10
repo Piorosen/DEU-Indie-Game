@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-    public Queue<(long Ticks, KeyCode Code)> Keys = new Queue<(long Ticks, KeyCode Code)>();
+    public Queue<(long Ticks, KeyCode Code)> SkillKeys = new Queue<(long Ticks, KeyCode Code)>();
 
     int Ticks = 0;
 
@@ -16,8 +16,14 @@ public class InputManager : MonoBehaviour
         {
             if (Input.GetKeyDown((KeyCode)key))
             {
-                Keys.Enqueue((this.Ticks, (KeyCode)key));
+                SkillKeys.Enqueue((this.Ticks, (KeyCode)key));
             }
+        }
+
+        int loop = SkillKeys.Count - 50;
+        for (int i = 0; i < loop; i++)
+        {
+            SkillKeys.Dequeue();
         }
         Ticks++;
     }
