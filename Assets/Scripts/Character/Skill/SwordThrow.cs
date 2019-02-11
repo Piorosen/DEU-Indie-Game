@@ -6,19 +6,33 @@ public class SwordThrow : Skill
 {
     public override void OnCastSkill()
     {
-        StartCoroutine(Casting(Sprite));
+        if (Sprite.enabled == false)
+        {
+            StartCoroutine(Casting(Sprite));
+        }
     }
 
     IEnumerator Casting(SpriteRenderer sprite)
     {
         sprite.enabled = true;
-        for (int i = 0; i < 90; i++)
+        float speed = 800.0f;
+        int dir = 0;
+        if (sprite.flipX == false)
         {
-            int ZAngle = i * 8;
-            
-                sprite.transform.rotation = Quaternion.Euler(0, 0, ZAngle);
-                sprite.transform.localPosition = new Vector3(90, 0, 0);
-            yield return new WaitForSeconds(0.1f / 90f);
+            dir = -1;
+        }
+        else
+        {
+            dir = 1;
+        }
+        sprite.transform.localPosition = new Vector3(dir * 30, 30, 0);
+        Vector3 location = this.transform.position;
+        
+        for (float time = 1.0f; time > 0.0f; time -= Time.deltaTime)
+        {
+            location.x += dir * speed * Time.deltaTime;
+            sprite.transform.position = location;
+            yield return new WaitForEndOfFrame();
         }
         sprite.enabled = false;
     }

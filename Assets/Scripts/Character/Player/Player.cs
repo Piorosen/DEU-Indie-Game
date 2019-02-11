@@ -61,11 +61,11 @@ public class Player : Character
             var code = (KeyCode)i.GetValue(Key.Skill.Instance);
             if (InputManager.Keys[code])
             {
-                Debug.Log(code);
-                foreach (var value in Skill.Values)
-                {
-                    value.Sprite.enabled = false;
-                }
+                //Debug.Log(code);
+                //foreach (var value in Skill.Values)
+                //{
+                //    value.Sprite.enabled = false;
+                //}
                 InputManager.Keys[code] = false;
                 Skill[code].OnCastSkill();
             }

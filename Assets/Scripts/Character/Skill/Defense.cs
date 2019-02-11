@@ -6,7 +6,10 @@ public class Defense : Skill
 {
     public override void OnCastSkill()
     {
-        StartCoroutine(Casting(Sprite));
+        if (Sprite.enabled == false)
+        {
+            StartCoroutine(Casting(Sprite));
+        }
     }
 
     IEnumerator Casting(SpriteRenderer sprite)
@@ -27,7 +30,7 @@ public class Defense : Skill
                 sprite.transform.localPosition = new Vector3(-30, 0, 0);
             }
 
-            yield return new WaitForSeconds(0.1f / 90f);
+            yield return new WaitForEndOfFrame();
         }
         sprite.enabled = false;
     }

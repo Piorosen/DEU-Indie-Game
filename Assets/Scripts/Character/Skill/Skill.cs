@@ -7,7 +7,7 @@ public abstract class Skill : MonoBehaviour
     public SpriteRenderer Sprite;
     public abstract void OnCastSkill();
 
-    protected void Awake()
+    protected virtual void Awake()
     {
         Sprite = GetComponent<SpriteRenderer>();
     }
