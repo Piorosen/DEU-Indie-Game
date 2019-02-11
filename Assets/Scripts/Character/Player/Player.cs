@@ -27,19 +27,9 @@ public class Player : Character
     {
         base.SetAnimation(dir);
 
-        if (dir.x > 0)
+        foreach (var value in Skill.Values)
         {
-            foreach (var value in Skill.Values)
-            {
-                value.Sprite.flipX = true;
-            }
-        }
-        else if (dir.x < 0)
-        {
-            foreach (var value in Skill.Values)
-            {
-                value.Sprite.flipX = false;
-            }
+            value.Sprite.flipX = this.GetComponent<SpriteRenderer>().flipX;
         }
     }
 
