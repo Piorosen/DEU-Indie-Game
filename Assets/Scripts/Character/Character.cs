@@ -2,17 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Character : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    protected int MaxJumpCount = 1;
+    protected int JumpCount = 1;
+
+    protected int JumpPower = 1000;
+    protected int MoveSpeed = 3;
+
+    void SetAnimation()
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    void Movement(Vector2 Dir)
     {
-        
+        this.transform.Translate(Dir.normalized * MoveSpeed * Time.deltaTime);
     }
+
+
 }
