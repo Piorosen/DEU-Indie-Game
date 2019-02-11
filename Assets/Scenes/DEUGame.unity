@@ -112,6 +112,38 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &33040272 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1572646315707953052, guid: 730f8019c3faca445b16b81be1c1e717,
+    type: 3}
+  m_PrefabInstance: {fileID: 1572646314008705605}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &33040277
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 33040272}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 64, y: 128}
+    newSize: {x: 0.16, y: 0.32}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 64, y: 128}
+  m_EdgeRadius: 0
 --- !u!1 &78521069
 GameObject:
   m_ObjectHideFlags: 0
@@ -867,7 +899,17 @@ PrefabInstance:
     - target: {fileID: 1572646315707953049, guid: 730f8019c3faca445b16b81be1c1e717,
         type: 3}
       propertyPath: m_GravityScale
-      value: 5
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 9014114750093480136, guid: 730f8019c3faca445b16b81be1c1e717,
+        type: 3}
+      propertyPath: JumpPower
+      value: 20000
+      objectReference: {fileID: 0}
+    - target: {fileID: 9014114750093480136, guid: 730f8019c3faca445b16b81be1c1e717,
+        type: 3}
+      propertyPath: MoveSpeed
+      value: 200
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 730f8019c3faca445b16b81be1c1e717, type: 3}

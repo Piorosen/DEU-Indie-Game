@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    protected int MaxJumpCount = 1;
-    protected int JumpCount = 1;
+    public int MaxJumpCount = 1;
+    protected int JumpCount = 0;
 
-    protected int JumpPower = 10000;
-    protected int MoveSpeed = 50;
+    public int JumpPower = 20000;
+    public int MoveSpeed = 100;
 
     protected bool IsGround = true;
 
@@ -17,7 +17,7 @@ public class Character : MonoBehaviour
 
     protected void Start()
     {
-        rigidBody = GetComponent<Rigidbody2D>();
+        rigidBody = this.transform.GetComponent<Rigidbody2D>();
     }
 
     protected void SetAnimation()
@@ -27,7 +27,7 @@ public class Character : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-
+        JumpCount = MaxJumpCount;
     }
 
     protected void Movement(Vector2 Dir)
@@ -44,6 +44,7 @@ public class Character : MonoBehaviour
     {
         if (JumpCount > 0)
         {
+            rigidBody.velocity = Vector2.zero;
             rigidBody.AddForce(Vector2.up * JumpPower);
             IsGround = false;
             JumpCount--;
