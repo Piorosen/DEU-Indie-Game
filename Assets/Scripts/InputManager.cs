@@ -22,7 +22,7 @@ public class InputManager : MonoBehaviour
         {
             foreach (var i in Key.Move.Instance.GetType().GetFields())
             {
-                if (i.GetValue(Key.Move.Instance) != key)
+                if ((KeyCode)i.GetValue(Key.Move.Instance) != (KeyCode)key)
                 {
                     Keys[(KeyCode)key] = Input.GetKeyDown((KeyCode)key) ? true : Keys[(KeyCode)key];
                 }

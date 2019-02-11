@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ISkill
+public abstract class Skill : MonoBehaviour
 {
-    void OnCastSkill();
+    protected SpriteRenderer Sprite;
+    public abstract void OnCastSkill();
 
+    protected void Awake()
+    {
+        Sprite = GetComponent<SpriteRenderer>();
+    }
 }

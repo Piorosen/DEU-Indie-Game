@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hook : ISkill
+public class Hook : Skill
 {
-    public void OnCastSkill()
+    public override void OnCastSkill()
     {
+
+
     }
 
     // Start is called before the first frame update

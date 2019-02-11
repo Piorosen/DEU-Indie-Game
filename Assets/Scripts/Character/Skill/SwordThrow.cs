@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwordThrow : ISkill
+public class SwordThrow : Skill
 {
-    public void OnCastSkill()
+    public override void OnCastSkill()
     {
-        throw new System.NotImplementedException();
+
+
     }
 }

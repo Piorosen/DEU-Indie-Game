@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Defense : ISkill
+public class Defense : Skill
 {
-    public void OnCastSkill()
+    public override void OnCastSkill()
     {
+
 
     }
 

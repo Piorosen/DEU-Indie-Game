@@ -13,7 +13,7 @@ public class Character : MonoBehaviour
 
     protected bool IsGround = true;
 
-    public Rigidbody2D rigidBody;
+    protected Rigidbody2D rigidBody;
 
     protected virtual void Start()
     {

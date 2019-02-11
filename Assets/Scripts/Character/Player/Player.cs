@@ -4,21 +4,23 @@ using UnityEngine;
 
 public class Player : Character
 {
-    Dictionary<KeyCode, ISkill> Skill = new Dictionary<KeyCode, ISkill>();
+    Dictionary<KeyCode, Skill> Skill = new Dictionary<KeyCode, Skill>();
 
-    protected Attack Attack = new Attack();
+    public Skill Sword;
+    public Skill Defense;
+    public Skill Hook;
+    public Skill SwordThrow;
 
 
     // Start is called before the first frame update
-    protected virtual void Start()
+    protected override void Start()
     {
         base.Start();
 
-        Skill[Key.Skill.Instance.Attack] = new Attack();
-        Skill[Key.Skill.Instance.Hook] = new Hook();
-        Skill[Key.Skill.Instance.Defense] = new Defense();
-        Skill[Key.Skill.Instance.Attack] = new SwordThrow();
-
+        Skill[Key.Skill.Instance.Attack] = Sword;
+        Skill[Key.Skill.Instance.Hook] = Hook;
+        Skill[Key.Skill.Instance.Defense] = Defense;
+        Skill[Key.Skill.Instance.SwordThrowing] = SwordThrow;
     }
 
 
@@ -28,19 +30,19 @@ public class Player : Character
     {
         Vector2 Dir = new Vector2();
 
-        if (InputManager.Keys[Key.Move.Instance.Left])
+        if (Input.GetKey(Key.Move.Instance.Left))
         {
             Dir.x -= 1;
         }
-        if (InputManager.Keys[Key.Move.Instance.Right])
+        if (Input.GetKey(Key.Move.Instance.Right))
         {
             Dir.x += 1;
         }
-        if (InputManager.Keys[Key.Move.Instance.Up])
+        if (Input.GetKey(Key.Move.Instance.Up))
         {
             Dir.y += 1;
         }
-        if (InputManager.Keys[Key.Move.Instance.Down])
+        if (Input.GetKey(Key.Move.Instance.Down))
         {
             Dir.y -= 1;
         }
@@ -48,8 +50,12 @@ public class Player : Character
         foreach (var i in Key.Skill.Instance.GetType().GetFields())
         {
             var code = (KeyCode)i.GetValue(Key.Skill.Instance);
-
-            Skill[code].OnCastSkill();
+            if (InputManager.Keys[code])
+            {
+                Debug.Log(code);
+                InputManager.Keys[code] = false;
+                Skill[code].OnCastSkill();
+            }
         }
 
         Movement(Dir);
