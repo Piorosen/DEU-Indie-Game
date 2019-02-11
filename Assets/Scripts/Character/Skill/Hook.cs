@@ -67,11 +67,16 @@ public class Hook : Skill
 
         location.z = 0;
         arrive.z = 0;
-        for (float time = 0.5f; time > 0.0f; time -= Time.deltaTime)
+
+        var distance = arrive - location;
+        this.transform.parent.GetComponent<Rigidbody2D>().gravityScale = 0;
+        this.transform.parent.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+        for (float time = 0.1f; time > 0.0f; time -= Time.deltaTime)
         {
-            this.transform.parent.Translate(Vector3.Lerp(location, arrive, 0.1f));
+            this.transform.parent.Translate(distance * Time.deltaTime * (1 / 0.1f));
             yield return new WaitForEndOfFrame();
         }
+        this.transform.parent.GetComponent<Rigidbody2D>().gravityScale = 100;
     }
 
 
