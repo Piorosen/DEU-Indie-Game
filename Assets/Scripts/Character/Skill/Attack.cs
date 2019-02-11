@@ -6,7 +6,7 @@ public class Attack : ISkill
 {
     public void OnCastSkill()
     {
-        
+
     
     }
 }

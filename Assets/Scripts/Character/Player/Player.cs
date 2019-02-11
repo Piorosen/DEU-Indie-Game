@@ -45,7 +45,12 @@ public class Player : Character
             Dir.y -= 1;
         }
 
+        foreach (var i in Key.Skill.Instance.GetType().GetFields())
+        {
+            var code = (KeyCode)i.GetValue(Key.Skill.Instance);
 
+            Skill[code].OnCastSkill();
+        }
 
         Movement(Dir);
     }
