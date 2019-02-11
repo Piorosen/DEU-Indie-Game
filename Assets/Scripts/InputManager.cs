@@ -20,7 +20,14 @@ public class InputManager : MonoBehaviour
     {
         foreach (var key in Enum.GetValues(typeof(KeyCode)))
         {
-            Keys[(KeyCode)key] = Input.GetKey((KeyCode)key);
+            foreach (var i in Key.Move.Instance.GetType().GetFields())
+            {
+
+                if (i.GetValue(Key.Move.Instance) != key)
+                {
+                    Keys[(KeyCode)key] = Input.GetKey((KeyCode)key);
+                }
+            }
         }
     }
 }

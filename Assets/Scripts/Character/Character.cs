@@ -15,7 +15,7 @@ public class Character : MonoBehaviour
 
     public Rigidbody2D rigidBody;
 
-    protected void Start()
+    protected virtual void Start()
     {
         rigidBody = this.transform.GetComponent<Rigidbody2D>();
     }

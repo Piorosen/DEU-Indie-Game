@@ -2,17 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Attack : Skill
+public class Attack : ISkill
 {
-    // Start is called before the first frame update
-    void Start()
+    public void OnCastSkill()
     {
         
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+    
     }
 }
