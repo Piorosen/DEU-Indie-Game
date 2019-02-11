@@ -15,7 +15,21 @@ public class Attack : Skill
         sprite.enabled = true;
         for (int i = 0; i < 90; i++)
         {
-            sprite.transform.rotation = Quaternion.Euler(0, 0, 30 + i);
+            int ZAngle = 30 + i;
+
+            if (sprite.flipX == true)
+            {
+                sprite.transform.rotation = Quaternion.Euler(0, 0, ZAngle);
+
+                sprite.transform.localPosition = new Vector3(30, 20, 0);
+            }
+            else
+            {
+                sprite.transform.rotation = Quaternion.Euler(0, 0, -ZAngle);
+
+                sprite.transform.localPosition = new Vector3(-30, 20, 0);
+            }
+
             yield return new WaitForSeconds(0.1f / 90.0f);
         }
         sprite.enabled = false;

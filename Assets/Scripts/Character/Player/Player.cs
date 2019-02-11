@@ -23,6 +23,26 @@ public class Player : Character
         Skill[Key.Skill.Instance.SwordThrowing] = SwordThrow;
     }
 
+    protected override void SetAnimation(Vector2 dir)
+    {
+        base.SetAnimation(dir);
+
+        if (dir.x > 0)
+        {
+            Sword.Sprite.flipX = true;
+            Defense.Sprite.flipX = true;
+            Hook.Sprite.flipX = true;
+            SwordThrow.Sprite.flipX = true;
+        }
+        else if (dir.x < 0)
+        {
+            Sword.Sprite.flipX = false;
+            Defense.Sprite.flipX = false;
+            Hook.Sprite.flipX = false;
+            SwordThrow.Sprite.flipX = false;
+
+        }
+    }
 
 
     // Update is called once per frame

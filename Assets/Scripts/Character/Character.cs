@@ -20,9 +20,16 @@ public class Character : MonoBehaviour
         rigidBody = this.transform.GetComponent<Rigidbody2D>();
     }
 
-    protected void SetAnimation()
+    protected virtual void SetAnimation(Vector2 dir)
     {
-
+        if (dir.x > 0)
+        {
+            this.transform.GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else if (dir.x < 0)
+        {
+            this.transform.GetComponent<SpriteRenderer>().flipX = false;
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -30,14 +37,15 @@ public class Character : MonoBehaviour
         JumpCount = MaxJumpCount;
     }
 
-    protected void Movement(Vector2 Dir)
+    protected void Movement(Vector2 dir)
     {
-        if (Dir.y > 0)
+        if (dir.y > 0)
         {
             Jump();
-            Dir.y = 0;
+            dir.y = 0;
         }
-        this.transform.Translate(Dir.normalized * MoveSpeed * Time.deltaTime);
+        this.transform.Translate(dir.normalized * MoveSpeed * Time.deltaTime);
+        SetAnimation(dir);
     }
 
     protected void Jump()
