@@ -29,18 +29,17 @@ public class Player : Character
 
         if (dir.x > 0)
         {
-            Sword.Sprite.flipX = true;
-            Defense.Sprite.flipX = true;
-            Hook.Sprite.flipX = true;
-            SwordThrow.Sprite.flipX = true;
+            foreach (var value in Skill.Values)
+            {
+                value.Sprite.flipX = true;
+            }
         }
         else if (dir.x < 0)
         {
-            Sword.Sprite.flipX = false;
-            Defense.Sprite.flipX = false;
-            Hook.Sprite.flipX = false;
-            SwordThrow.Sprite.flipX = false;
-
+            foreach (var value in Skill.Values)
+            {
+                value.Sprite.flipX = false;
+            }
         }
     }
 
@@ -73,6 +72,10 @@ public class Player : Character
             if (InputManager.Keys[code])
             {
                 Debug.Log(code);
+                foreach (var value in Skill.Values)
+                {
+                    value.Sprite.enabled = false;
+                }
                 InputManager.Keys[code] = false;
                 Skill[code].OnCastSkill();
             }
