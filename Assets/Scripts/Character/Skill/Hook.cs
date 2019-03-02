@@ -35,26 +35,47 @@ public class Hook : Skill
     {
         // 참 : 유저가 날라감.
         // 거짓 : 앵커가 날라감.
-        Debug.Log(CheckMode());
+
         if (CheckMode())
         {
+            // 캐릭터 이동
             StartCoroutine(Move());
 
             Disable();
         }
         else
         {
-            var a = this.transform.parent.position;
-            var b = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var location = this.transform.parent.position;
+            var arrive = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            
+            location.z = 0;
+            arrive.z = 0;
+            var tmp = arrive;
 
-            a.z = 0;
-            b.z = 0;
+            var ray = Physics2D.RaycastAll(location, arrive - location, 10000);
+
+            foreach (var check in ray)
+            {
+                if (check.collider != null && check.collider.gameObject.layer == 9)
+                {
+                    arrive = check.point;
+                    Debug.Log(check.point);
+                    break;
+                }
+            }
+
+            if (arrive == tmp)
+            {
+                Debug.Log("으앙?");
+                return;
+            }
             line.SetPositions(new Vector3[]
             {
-                a,b
+                location,
+                arrive
             });
 
-            Sprite.transform.position = b;
+            Sprite.transform.position = arrive;
 
             Enable();
         }
@@ -64,11 +85,12 @@ public class Hook : Skill
     {
         var location = this.transform.parent.position;
         var arrive = Sprite.transform.position;
-
+        
         location.z = 0;
         arrive.z = 0;
 
         var distance = arrive - location;
+
         this.transform.parent.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
         for (float time = 0.1f; time > 0.0f; time -= Time.deltaTime)
         {
