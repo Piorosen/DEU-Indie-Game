@@ -54,32 +54,70 @@ public class Hook : Skill
 
             var ray = Physics2D.RaycastAll(location, arrive - location, 10000);
 
+            bool bcheck = false;
             foreach (var check in ray)
             {
                 if (check.collider != null && check.collider.gameObject.layer == 9)
                 {
                     arrive = check.point;
                     Debug.Log(check.point);
+                    arrive.z = 0;
+                    bcheck = true;
+                    
                     break;
                 }
             }
-
-            if (arrive == tmp)
-            {
-                Debug.Log("으앙?");
-                return;
-            }
-            line.SetPositions(new Vector3[]
-            {
-                location,
-                arrive
-            });
-
-            Sprite.transform.position = arrive;
-
+            StartCoroutine(HookMove(location, arrive, !bcheck));
             Enable();
         }
     }
+    IEnumerator DragHook()
+    {
+        var range = line.GetPosition(1) - line.GetPosition(0);
+        
+        for (float time = 0.1f; time > 0.0f; time -= Time.deltaTime)
+        {
+            line.SetPositions(new Vector3[]
+            {
+                this.transform.parent.position,
+                line.GetPosition(1) - (range * Time.deltaTime * (1 / 0.1f))
+            });
+            yield return new WaitForEndOfFrame();
+        }
+
+        Disable();
+    }
+
+    IEnumerator HookMove(Vector3 l, Vector3 a, bool check = false)
+    {
+        var range = a - l;
+
+        var move = (range * Time.deltaTime * (1 / 0.1f));
+        for (float time = 0.1f; time > 0.0f; time -= Time.deltaTime)
+        {
+            line.SetPositions(new Vector3[]
+            {
+                this.transform.parent.position,
+                l + move
+            });
+            move += (range * Time.deltaTime * (1 / 0.1f));
+            yield return new WaitForEndOfFrame();
+        }
+
+        line.SetPositions(new Vector3[]
+        {
+            this.transform.parent.position,
+            a   
+        });
+
+        Sprite.transform.position = a;
+        
+        if (check == true)
+        {
+            yield return DragHook();
+        }
+    }
+
 
     IEnumerator Move()
     {
