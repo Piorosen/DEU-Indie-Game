@@ -44,7 +44,7 @@ public class Character : MonoBehaviour
             Jump();
             dir.y = 0;
         }
-        this.transform.Translate(dir.normalized * MoveSpeed * Time.deltaTime);
+        rigidBody.velocity = new Vector2(dir.x != 0 ? dir.normalized.x * MoveSpeed : rigidBody.velocity.x, rigidBody.velocity.y);
         SetAnimation(dir);
     }
 

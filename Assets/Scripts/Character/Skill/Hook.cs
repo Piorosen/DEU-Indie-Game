@@ -4,15 +4,36 @@ using UnityEngine;
 
 public class Hook : Skill
 {
+    public float HookRange = 200;
+    public float HookSpeed = 10.0f;
+    public bool Hit = false;
+
     LineRenderer line;
+
+    BoxCollider2D a;
 
     protected override void Awake()
     {
         base.Awake();
         line = GetComponent<LineRenderer>();
-
         line.startWidth = 10f;
         line.endWidth = 10f;
+    }
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+         Debug.Log("Hit");
+        if (collision.gameObject.layer != 11)
+        {
+            Hit = true;
+        }
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("Hit");
+        if (collision.gameObject.layer != 11)
+        {
+            Hit = true;
+        }
     }
 
     void Enable()
@@ -40,101 +61,98 @@ public class Hook : Skill
         {
             // 캐릭터 이동
             StartCoroutine(Move());
-
             Disable();
         }
         else
         {
+            Hit = false;
+
             var location = this.transform.parent.position;
             var arrive = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             
             location.z = 0;
             arrive.z = 0;
-            var tmp = arrive;
 
-            var ray = Physics2D.RaycastAll(location, arrive - location, 10000);
+            arrive = location + (arrive - location).normalized * HookRange;
 
-            bool bcheck = false;
-            foreach (var check in ray)
-            {
-                if (check.collider != null && check.collider.gameObject.layer == 9)
-                {
-                    arrive = check.point;
-                    Debug.Log(check.point);
-                    arrive.z = 0;
-                    bcheck = true;
-                    
-                    break;
-                }
-            }
-            StartCoroutine(HookMove(location, arrive, !bcheck));
+            var ray = Physics2D.RaycastAll(location, arrive, HookRange);
+            
+            StartCoroutine(HookMove(location, arrive));
             Enable();
         }
     }
     IEnumerator DragHook()
     {
         var range = line.GetPosition(1) - line.GetPosition(0);
-        
-        for (float time = 0.1f; time > 0.0f; time -= Time.deltaTime)
+
+        while (range.magnitude > HookSpeed * Time.deltaTime)
         {
+            range = line.GetPosition(1) - line.GetPosition(0);
+            var lastPos = line.GetPosition(1) - range.normalized * HookSpeed * Time.deltaTime;
             line.SetPositions(new Vector3[]
             {
                 this.transform.parent.position,
-                line.GetPosition(1) - (range * Time.deltaTime * (1 / 0.1f))
+                lastPos
             });
+            Sprite.transform.position = lastPos;
             yield return new WaitForEndOfFrame();
         }
 
         Disable();
     }
 
-    IEnumerator HookMove(Vector3 l, Vector3 a, bool check = false)
+    IEnumerator HookMove(Vector3 l, Vector3 a)
     {
-        var range = a - l;
-
-        var move = (range * Time.deltaTime * (1 / 0.1f));
-        for (float time = 0.1f; time > 0.0f; time -= Time.deltaTime)
+        if (CheckMode())
         {
+            yield break;
+        }
+        var range = a - l;
+        float totalTime = range.magnitude / HookSpeed;
+        for (float time = totalTime; time > 0.0f; time -= Time.deltaTime)
+        {
+            var lastPos = l + range * (-(time - totalTime) / totalTime);
             line.SetPositions(new Vector3[]
             {
                 this.transform.parent.position,
-                l + move
+                lastPos
             });
-            move += (range * Time.deltaTime * (1 / 0.1f));
-            yield return new WaitForEndOfFrame();
+            Sprite.transform.position = lastPos;
+
+            if (Hit == true)
+            {
+                yield break;
+            }
+            yield return new WaitForFixedUpdate();
         }
 
-        line.SetPositions(new Vector3[]
-        {
-            this.transform.parent.position,
-            a   
-        });
-
-        Sprite.transform.position = a;
-        
-        if (check == true)
-        {
-            yield return DragHook();
-        }
+        yield return DragHook();
     }
 
 
     IEnumerator Move()
     {
-        var location = this.transform.parent.position;
+        var location = transform.parent.position;
         var arrive = Sprite.transform.position;
-        
         location.z = 0;
         arrive.z = 0;
+        var range = arrive - location;
 
-        var distance = arrive - location;
-
-        this.transform.parent.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
-        for (float time = 0.1f; time > 0.0f; time -= Time.deltaTime)
+        while (range.magnitude > 100)
         {
-            this.transform.parent.Translate(distance * Time.deltaTime * (1 / 0.1f));
-            yield return new WaitForEndOfFrame();
+            if (Hit == false)
+            {
+                yield break;
+            }
+            location = transform.parent.position;
+            location.z = 0;
+            range = arrive - location;
+
+            var conv = new Vector2(range.x, range.y);
+            transform.parent.GetComponent<Rigidbody2D>().velocity = conv.normalized * HookSpeed;
+            yield return new WaitForFixedUpdate();
         }
+        Sprite.transform.position = location;
     }
 
 
