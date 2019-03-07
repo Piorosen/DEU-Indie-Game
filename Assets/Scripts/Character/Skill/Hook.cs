@@ -19,15 +19,7 @@ public class Hook : Skill
         line.startWidth = 10f;
         line.endWidth = 10f;
     }
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-         Debug.Log("Hit");
-        if (collision.gameObject.layer != 11)
-        {
-            Hit = true;
-        }
-    }
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log("Hit");
         if (collision.gameObject.layer != 11)
@@ -35,6 +27,7 @@ public class Hook : Skill
             Hit = true;
         }
     }
+
 
     void Enable()
     {
@@ -137,17 +130,9 @@ public class Hook : Skill
         location.z = 0;
         arrive.z = 0;
         var range = arrive - location;
-
-        while (range.magnitude > 100)
+        float totalTime = range.magnitude / HookSpeed;
+        for (float time = totalTime; time > 0.0f; time -= Time.fixedDeltaTime)
         {
-            if (Hit == false)
-            {
-                yield break;
-            }
-            location = transform.parent.position;
-            location.z = 0;
-            range = arrive - location;
-
             var conv = new Vector2(range.x, range.y);
             transform.parent.GetComponent<Rigidbody2D>().velocity = conv.normalized * HookSpeed;
             yield return new WaitForFixedUpdate();
@@ -162,6 +147,7 @@ public class Hook : Skill
         {
             line.SetPosition(0, this.transform.parent.position);
             Sprite.transform.position = line.GetPosition(1);
+
         }
     }
 
