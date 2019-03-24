@@ -39,7 +39,6 @@ public class Character : MonoBehaviour
 
     protected void Movement(Vector2 dir)
     {
-        Debug.Log(dir);
         if (dir.y > 0)
         {
             Jump();

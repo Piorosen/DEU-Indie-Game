@@ -7,12 +7,14 @@ public class Hook : Skill
     public float HookRange = 200;
     public float HookSpeed = 10.0f;
     public bool Hit = false;
+    public bool AnimEnd = true;
+
+    public bool OverRange = false;
 
     public Transform PlayerPos;
 
     LineRenderer line;
-
-    BoxCollider2D a;
+    
 
     protected override void Awake()
     {
@@ -27,7 +29,21 @@ public class Hook : Skill
         // 참 : 유저가 날라감.
         // 거짓 : 앵커가 날라감.
         
-        StartCoroutine(StartHook());
+        if (AnimEnd == true)
+        {
+            AnimEnd = false;
+            if (Hit == true)
+            {
+                StartCoroutine(EndHook(OverRange));
+            }
+            else
+            {
+                OverRange = false;
+                line.enabled = true;
+                Sprite.enabled = true;
+                StartCoroutine(StartHook());
+            }
+        }
     }
 
     IEnumerator StartHook()
@@ -57,6 +73,9 @@ public class Hook : Skill
                 // 기존보다 더 짧아짐
                 arrive = check.point;
                 arrive.z = 0;
+
+                Hit = true;
+
                 break;
             }
         }
@@ -64,16 +83,37 @@ public class Hook : Skill
         // 갈고리 이동 모션
         yield return HookMove(location, arrive);
 
+        if (OverRange != true)
+        {
+            if (Hit == false)
+            {
+                yield return EndHook(true);
+            }
+        }
+
+        AnimEnd = true;
     }
 
     IEnumerator EndHook(bool whoFly)
     {
-        yield return DragHook();
+        if (whoFly)
+        {
+            yield return HookBack();
+        }
+        else
+        {
+            yield return HookFront();
+        }
+        line.enabled = false;
+        Sprite.enabled = false;
+
+        Hit = false;
+        AnimEnd = true;
     }
 
 
-    // 다시 돌아오는 코드
-    IEnumerator DragHook()
+    // 갈고리가 플레이어 에게 다시 돌아옴.
+    IEnumerator HookBack()
     {
         var range = line.GetPosition(1) - line.GetPosition(0);
 
@@ -84,9 +124,28 @@ public class Hook : Skill
             SetHookPosition(lastPos);
             yield return new WaitForEndOfFrame();
         }
-        
     }
+    // 플레이어가 갈고리 따라 이동
+    IEnumerator HookFront()
+    {
+        var location = PlayerPos.position;
+        var arrive = Sprite.transform.position;
+        location.z = 0;
+        arrive.z = 0;
 
+        var range = arrive - location;
+        float totalTime = range.magnitude / HookSpeed;
+
+        for (float time = totalTime; time > 0.0f; time -= Time.fixedDeltaTime)
+        {
+            var conv = new Vector2(range.x, range.y) * Time.fixedDeltaTime;
+            //PlayerPos.position += new Vector3(conv.x, conv.y);
+            PlayerPos.GetComponent<Rigidbody2D>().velocity = conv.normalized * HookSpeed;
+            //transform.parent.GetComponent<Rigidbody2D>().velocity = conv.normalized * HookSpeed;
+            yield return new WaitForFixedUpdate();
+        }
+        Sprite.transform.position = location;
+    }
     void SetHookPosition(Vector3 pos)
     {
         pos.z = 0;
@@ -112,36 +171,17 @@ public class Hook : Skill
         {
             // 마지막 이동한 위치 구함.
             var lastPos = l + range * (-(time - totalTime) / totalTime);
+            
 
             // 위치 설정
             SetHookPosition(lastPos);
-
-            if (Hit == true)
-            {
-                yield break;
-            }
+            
             yield return new WaitForEndOfFrame();
         }
         SetHookPosition(a);
     }
 
-
-    IEnumerator Move()
-    {
-        var location = PlayerPos.position;
-        var arrive = Sprite.transform.position;
-        location.z = 0;
-        arrive.z = 0;
-        var range = arrive - location;
-        float totalTime = range.magnitude / HookSpeed;
-        for (float time = totalTime; time > 0.0f; time -= Time.fixedDeltaTime)
-        {
-            var conv = new Vector2(range.x, range.y);
-            transform.parent.GetComponent<Rigidbody2D>().velocity = conv.normalized * HookSpeed;
-            yield return new WaitForFixedUpdate();
-        }
-        Sprite.transform.position = location;
-    }
+    
 
 
     void LateUpdate()
@@ -151,6 +191,11 @@ public class Hook : Skill
             line.SetPosition(0, PlayerPos.position);
             Sprite.transform.position = line.GetPosition(1);
 
+            if ((Sprite.transform.position - PlayerPos.position).magnitude > HookRange)
+            {
+                OverRange = true;
+                OnCastSkill();
+            }
         }
     }
 
