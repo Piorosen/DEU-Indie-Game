@@ -8,6 +8,8 @@ public class Hook : Skill
     public float HookSpeed = 10.0f;
     public bool Hit = false;
 
+    public Transform PlayerPos;
+
     LineRenderer line;
 
     BoxCollider2D a;
@@ -19,61 +21,58 @@ public class Hook : Skill
         line.startWidth = 10f;
         line.endWidth = 10f;
     }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Debug.Log("Hit");
-        if (collision.gameObject.layer != 11)
-        {
-            Hit = true;
-        }
-    }
-
-
-    void Enable()
-    {
-        line.enabled = true;
-        Sprite.enabled = true;
-    }
-    void Disable()
-    {
-        line.enabled = false;
-        Sprite.enabled = false;
-    }
-
-    bool CheckMode()
-    {
-        return Sprite.enabled;
-    }
 
     public override void OnCastSkill()
     {
         // 참 : 유저가 날라감.
         // 거짓 : 앵커가 날라감.
-
-        if (CheckMode())
-        {
-            // 캐릭터 이동
-            StartCoroutine(Move());
-            Disable();
-        }
-        else
-        {
-            Hit = false;
-
-            var location = this.transform.parent.position;
-            var arrive = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            
-            location.z = 0;
-            arrive.z = 0;
-
-            arrive = location + (arrive - location).normalized * HookRange;
-
-            var ray = Physics2D.RaycastAll(location, arrive, HookRange);
-            
-            StartCoroutine(HookMove(location, arrive));
-            Enable();
-        }
+        
+        StartCoroutine(StartHook());
     }
+
+    IEnumerator StartHook()
+    {
+        // 현재 내 위치
+        var location = PlayerPos.position;
+        // 마우스 위치
+        var arrive = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        /// Z축 삭제
+        location.z = 0;
+        arrive.z = 0;
+
+        // Hook 길이 만큼 길이 변경함.
+        arrive = location + (arrive - location).normalized * HookRange;
+
+        // 광선 사격
+        var ray = Physics2D.RaycastAll(location, arrive - location, HookRange);
+
+        // 충돌 처리 체크
+        foreach (var check in ray)
+        {
+            // WalkAble 블럭만 체크함 == 9, 몬스터 13
+            if (check.collider != null && check.collider.gameObject.layer == 9)
+            {
+                // 발견하면은 arrive를 변경함 위치를
+                // 기존보다 더 짧아짐
+                arrive = check.point;
+                arrive.z = 0;
+                break;
+            }
+        }
+
+        // 갈고리 이동 모션
+        yield return HookMove(location, arrive);
+
+    }
+
+    IEnumerator EndHook(bool whoFly)
+    {
+        yield return DragHook();
+    }
+
+
+    // 다시 돌아오는 코드
     IEnumerator DragHook()
     {
         var range = line.GetPosition(1) - line.GetPosition(0);
@@ -82,50 +81,54 @@ public class Hook : Skill
         {
             range = line.GetPosition(1) - line.GetPosition(0);
             var lastPos = line.GetPosition(1) - range.normalized * HookSpeed * Time.deltaTime;
-            line.SetPositions(new Vector3[]
-            {
-                this.transform.parent.position,
-                lastPos
-            });
-            Sprite.transform.position = lastPos;
+            SetHookPosition(lastPos);
             yield return new WaitForEndOfFrame();
         }
+        
+    }
 
-        Disable();
+    void SetHookPosition(Vector3 pos)
+    {
+        pos.z = 0;
+        line.SetPositions(new Vector3[]
+            {
+                PlayerPos.position,
+                pos
+            });
+
+
+        Sprite.transform.position = pos;
     }
 
     IEnumerator HookMove(Vector3 l, Vector3 a)
     {
-        if (CheckMode())
-        {
-            yield break;
-        }
+        // 길이 구함.
         var range = a - l;
+        // 스칼라값 구하고 속도를 나눔
         float totalTime = range.magnitude / HookSpeed;
+
+        // 특정 속도에 맞춰서 지속적인 계속 움직임.
         for (float time = totalTime; time > 0.0f; time -= Time.deltaTime)
         {
+            // 마지막 이동한 위치 구함.
             var lastPos = l + range * (-(time - totalTime) / totalTime);
-            line.SetPositions(new Vector3[]
-            {
-                this.transform.parent.position,
-                lastPos
-            });
-            Sprite.transform.position = lastPos;
+
+            // 위치 설정
+            SetHookPosition(lastPos);
 
             if (Hit == true)
             {
                 yield break;
             }
-            yield return new WaitForFixedUpdate();
+            yield return new WaitForEndOfFrame();
         }
-
-        yield return DragHook();
+        SetHookPosition(a);
     }
 
 
     IEnumerator Move()
     {
-        var location = transform.parent.position;
+        var location = PlayerPos.position;
         var arrive = Sprite.transform.position;
         location.z = 0;
         arrive.z = 0;
@@ -145,7 +148,7 @@ public class Hook : Skill
     {
         if (line.enabled == true)
         {
-            line.SetPosition(0, this.transform.parent.position);
+            line.SetPosition(0, PlayerPos.position);
             Sprite.transform.position = line.GetPosition(1);
 
         }

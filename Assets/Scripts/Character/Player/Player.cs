@@ -11,7 +11,6 @@ public class Player : Character
     public Skill Hook;
     public Skill SwordThrow;
 
-
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -29,12 +28,10 @@ public class Player : Character
 
         foreach (var value in Skill.Values)
         {
-            value.Sprite.flipX = this.GetComponent<SpriteRenderer>().flipX;
+            value.Sprite.flipX = PlayerSprite.flipX;
         }
     }
 
-
-    // Update is called once per frame
     void FixedUpdate()
     {
         Vector2 Dir = new Vector2();
@@ -73,4 +70,5 @@ public class Player : Character
 
         Movement(Dir);
     }
+
 }
