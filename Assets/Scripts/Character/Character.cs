@@ -24,11 +24,11 @@ public class Character : MonoBehaviour
     {
         if (dir.x > 0)
         {
-            PlayerSprite.flipX = true;
+            PlayerSprite.flipX = false;
         }
         else if (dir.x < 0)
         {
-            PlayerSprite.flipX = false;
+            PlayerSprite.flipX = true;
         }
     }
 
